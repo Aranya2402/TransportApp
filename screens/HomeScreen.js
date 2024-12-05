@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import axios from 'axios';
 
 const HomeScreen = () => {
@@ -17,12 +10,11 @@ const HomeScreen = () => {
       .get('https://jsonplaceholder.typicode.com/posts')
       .then((response) => {
         console.log(response.data); // Check the response
-        const validItems = response.data.filter(item => item.id && item.title && item.body);
+        const validItems = response.data.filter(item => item.id != null && item.title && item.body);
         setItems(validItems.slice(0, 10)); // Use only valid items
       })
       .catch((error) => console.error(error));
   }, []);
-  
 
   const renderCard = ({ item }) => (
     <TouchableOpacity style={styles.card}>
@@ -40,10 +32,9 @@ const HomeScreen = () => {
         </Text>
         {/* Title */}
         <Text style={styles.title}>
-        {item.title 
-          ? `🌟 ${item.title.toUpperCase()}` // Add a star and transform to uppercase
-          : 'No Title Available'}
-      </Text>        {/* Description */}
+          {item.title ? `🌟 ${item.title.toUpperCase()}` : 'No Title Available'}
+        </Text>
+        {/* Description */}
         <Text style={styles.description}>
           {item.body.length > 100 ? `${item.body.substring(0, 100)}...` : item.body}
         </Text>
@@ -56,7 +47,7 @@ const HomeScreen = () => {
       <Text style={styles.header}>Item List</Text>
       <FlatList
         data={items}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.id ? item.id.toString() : String(item.index)}
         renderItem={renderCard}
         contentContainerStyle={styles.list}
       />
